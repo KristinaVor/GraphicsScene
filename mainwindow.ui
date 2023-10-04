@@ -71,17 +71,32 @@
         </item>
        </layout>
       </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="pushButton_generate">
+        <property name="text">
+         <string>Генерировать</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QGraphicsView" name="graphicsView">
         <property name="cursor" stdset="0">
          <cursorShape>CrossCursor</cursorShape>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton_generate">
-        <property name="text">
-         <string>Генерировать</string>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="tabletTracking">
+         <bool>true</bool>
+        </property>
+        <property name="interactive">
+         <bool>true</bool>
+        </property>
+        <property name="renderHints">
+         <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform</set>
+        </property>
+        <property name="dragMode">
+         <enum>QGraphicsView::ScrollHandDrag</enum>
         </property>
        </widget>
       </item>
