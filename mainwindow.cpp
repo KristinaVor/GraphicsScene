@@ -11,11 +11,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     pathfindingThread = new PathfindingThread(this);
-    createScene();
+
+    scene = new QGraphicsScene(this);
+    CustomGraphicsView* customView = new CustomGraphicsView(scene, this);
+    ui->verticalLayout->addWidget(customView);
+
     connect(ui->pushButton_generate, &QPushButton::clicked, this, &MainWindow::generateField);
     connect(pathfindingThread, &PathfindingThread::pathFoundSignal, this, &MainWindow::updatePath);
     connect(pathfindingThread, &PathfindingThread::pathNotFoundSignal, this, &MainWindow::handlePathNotFound);
-
 
     loadSettings();
 }
@@ -27,18 +30,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::createScene()
 {
-    scene = new QGraphicsScene(this);
-    ui->graphicsView->setScene(scene);
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-    ui->graphicsView->setRenderHint(QPainter::SmoothPixmapTransform);
-    ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
-    ui->graphicsView->setInteractive(true);
-
-    CustomGraphicsView* customView = dynamic_cast<CustomGraphicsView*>(ui->graphicsView);
-    if (customView)
-    {
-        connect(customView, &CustomGraphicsView::mouseClicked, this, &MainWindow::handleSquareClick);
-    }
     // Отобразите сетку
     for (int x = 0; x < fieldWidth; ++x)
     {
@@ -93,7 +84,7 @@ void MainWindow::generateField()
     pathfindingThread->start();
 }
 
-void MainWindow::handleSquareClick(QMouseEvent *event)
+/*void MainWindow::handleSquareClick(QMouseEvent *event)
 {
     // Обработка клика по квадрату (установка точек А и Б)
     QPoint squarePos = ui->graphicsView->mapToScene(event->pos()).toPoint();
@@ -155,7 +146,7 @@ void MainWindow::handleMouseMove(QMouseEvent *event)
         pathfindingThread->setEndPoint(QPoint(x, y));
     }
 }
-
+*/
 void MainWindow::updatePath(const std::vector<QPoint> &path)
 {
     // Преобразуйте QVector<QPoint> в std::vector<QPoint>
@@ -164,8 +155,6 @@ void MainWindow::updatePath(const std::vector<QPoint> &path)
     // Обработка найденного пути
     displayPathOnField(stdPath);
 }
-
-
 
 void MainWindow::handlePathNotFound()
 {
@@ -208,7 +197,6 @@ void MainWindow::clearField()
     }
     pathLines.clear();
 }
-
 
 void MainWindow::loadSettings()
 {

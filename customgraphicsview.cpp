@@ -2,12 +2,27 @@
 
 #include "customgraphicsview.h"
 
-CustomGraphicsView::CustomGraphicsView(QWidget *parent) : QGraphicsView(parent)
+CustomGraphicsView::CustomGraphicsView(QGraphicsScene *scene, QWidget *parent)
+    : QGraphicsView(scene, parent)
 {
+    setRenderHint(QPainter::Antialiasing);
+    setRenderHint(QPainter::SmoothPixmapTransform);
+    setDragMode(QGraphicsView::ScrollHandDrag);
+    setInteractive(true);
 }
 
-CustomGraphicsView::~CustomGraphicsView()
+void CustomGraphicsView::wheelEvent(QWheelEvent *event)
 {
+    if (event->delta() > 0)
+    {
+        scale(1.2, 1.2);
+    }
+    else
+    {
+        scale(1.0 / 1.2, 1.0 / 1.2);
+    }
+
+    event->accept();
 }
 
 void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
@@ -15,14 +30,3 @@ void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
     emit mouseClicked(event);
 }
 
-void CustomGraphicsView::wheelEvent(QWheelEvent *event)
-{
-    int delta = event->angleDelta().y();
-    double scaleFactor = (delta > 0) ? 1.1 : 1 / 1.1;
-    scale(scaleFactor, scaleFactor);
-}
-
-void CustomGraphicsView::mouseMoveEvent(QMouseEvent *event)
-{
-    emit mouseMoved(event); // Отправляем сигнал о движении мыши
-}
