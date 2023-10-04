@@ -34,11 +34,9 @@ private slots:
     void handlePathNotFound();
 
     void updatePath(const std::vector<QPoint> &path);
- //   void handleSquareClick(QMouseEvent *event);
- //   void handleMouseMove(QMouseEvent *event);
 
 private:
-    void createScene();
+    void createGrid();
     void displayPathOnField(const std::vector<QPoint> &path);
 
     Ui::MainWindow *ui;

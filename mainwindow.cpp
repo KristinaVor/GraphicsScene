@@ -28,7 +28,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::createScene()
+void MainWindow::createGrid()
 {
     // Отобразите сетку
     for (int x = 0; x < fieldWidth; ++x)
@@ -55,7 +55,7 @@ void MainWindow::generateField()
         return;
     }
 
-    createScene();
+    createGrid();
     scene->setSceneRect(0, 0, fieldWidth * 50, fieldHeight * 50);
 
     for (int i = 0; i < fieldHeight; ++i) {
