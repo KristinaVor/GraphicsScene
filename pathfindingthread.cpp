@@ -66,22 +66,19 @@ void PathfindingThread::run()
 
         if (pathFound)
         {
-            // Восстановление пути
-            QVector<QPoint> path;
+            path.clear();
             QPoint current = endSquare;
             while (current != QPoint(-1, -1))
             {
-                path.push_back(current);
+                path.prepend(current);
                 current = parentMap[current];
             }
 
-            // Отобразите найденный путь на поле
+            // Отправьте сигнал с найденным путем
             emit pathFoundSignal(path);
         }
         else
-        {
-            // Путь не найден
-            // Обработка случая, когда путь не существует
+        {    // Путь не найден
             emit pathNotFoundSignal();
         }
     }

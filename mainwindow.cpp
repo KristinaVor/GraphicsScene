@@ -56,7 +56,7 @@ void MainWindow::setStartPoint(const QPoint &point)
         startPoint = point;
         pathfindingThread->setStartPoint(startPoint);
         if (!endPoint.isNull()) {
-            pathfindingThread->run();
+            pathfindingThread->start();
         }
     }
 }
@@ -68,7 +68,7 @@ void MainWindow::setEndPoint(const QPoint &point)
         endPoint = point;
         pathfindingThread->setEndPoint(endPoint);
         if (!startPoint.isNull()) {
-            pathfindingThread->run();
+            pathfindingThread->start();
         }
     }
 }

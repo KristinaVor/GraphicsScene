@@ -11,6 +11,11 @@ CustomGraphicsView::CustomGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setInteractive(true);
 }
 
+QVector<QVector<int>> CustomGraphicsView::getGrid() const
+{
+    return grid;
+}
+
 void CustomGraphicsView::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0)
@@ -48,7 +53,6 @@ void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
     }
 }
 
-
 void CustomGraphicsView::setStartPoint(const QPoint &point)
 {
     QGraphicsItem *prevStart = scene()->itemAt(startPoint.x() * 50 + 1, startPoint.y() * 50 + 1, QTransform());
@@ -82,8 +86,6 @@ void CustomGraphicsView::setEndPoint(const QPoint &point)
 
     emit setEndPointSignal(endPoint);
 }
-
-
 
 void CustomGraphicsView::generateField(int width, int height)
 {
@@ -120,20 +122,17 @@ void CustomGraphicsView::generateField(int width, int height)
         }
         grid.append(row);
     }
+    endPointSet = false;
+    startPointSet = false;
 }
-
-QVector<QVector<int>> CustomGraphicsView::getGrid() const
-{
-    return grid;
-}
-
 
 void CustomGraphicsView::displayPath(const QVector<QPoint> &path)
 {
-    // Отобразите маршрут на поле
+    clearPath();
+
     QPen pathPen(Qt::blue, 3);
 
-    for (size_t i = 0; i < path.size() - 1; ++i)
+    for (int i = 0; i < path.size() - 1; ++i)
     {
         QPoint startPoint = path[i];
         QPoint endPoint = path[i + 1];
@@ -142,5 +141,17 @@ void CustomGraphicsView::displayPath(const QVector<QPoint> &path)
                                                             endPoint.x() * 50 + 25, endPoint.y() * 50 + 25);
         pathLine->setPen(pathPen);
         scene()->addItem(pathLine);
+
+        pathItems.append(pathLine);
     }
+}
+
+void CustomGraphicsView::clearPath()
+{
+    for (QGraphicsItem *item : pathItems)
+    {
+        scene()->removeItem(item);
+        delete item;
+    }
+    pathItems.clear();
 }

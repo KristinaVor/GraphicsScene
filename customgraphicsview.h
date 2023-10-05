@@ -33,7 +33,7 @@ protected:
 private:
     void setStartPoint(const QPoint &point);
     void setEndPoint(const QPoint &point);
-
+    void clearPath();
 
     int fieldWidth;
     int fieldHeight;
@@ -43,6 +43,7 @@ private:
     bool endPointSet;
 
     QVector<QVector<int>> grid;
+    QList<QGraphicsItem *> pathItems;
 };
 
 #endif // CUSTOMGRAPHICSVIEW_H
