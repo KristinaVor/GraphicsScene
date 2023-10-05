@@ -32,7 +32,7 @@ private slots:
     void loadSettings();
     void saveSettings();
 
-    void updatePath(const std::vector<QPoint> &path);
+    void updatePath(const QVector<QPoint> &path);
 
     void setStartPoint(const QPoint &point);
     void setEndPoint(const QPoint &point);

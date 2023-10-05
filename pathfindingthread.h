@@ -21,12 +21,11 @@ public:
     void run() override;
     void setStartPoint(const QPoint &point);
     void setEndPoint(const QPoint &point);
-    void setScene(QGraphicsScene *scene);
-    void setGrid(const QVector<QVector<int>> &newGrid);
     void clearPath();
+    void setSceneAndGrid(QGraphicsScene *scene, const QVector<QVector<int>> &newGrid);
 
 signals:
-    void pathFoundSignal(const std::vector<QPoint> &path); // Сигнал для передачи найденного пути
+    void pathFoundSignal(const QVector<QPoint> &path); // Сигнал для передачи найденного пути
     void pathNotFoundSignal(); // Сигнал для передачи информации о том, что путь не найден
 
 private:
@@ -34,7 +33,7 @@ private:
     QPoint endPoint;
     QGraphicsScene *scene;
     QVector<QVector<int>> grid;
-    std::vector<QPoint> path;
+    QVector<QPoint> path;
 
     QList<QPoint> getNeighbors(const QPoint &point);
 };

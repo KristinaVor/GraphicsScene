@@ -122,8 +122,13 @@ void CustomGraphicsView::generateField(int width, int height)
     }
 }
 
+QVector<QVector<int>> CustomGraphicsView::getGrid() const
+{
+    return grid;
+}
 
-void CustomGraphicsView::displayPath(const std::vector<QPoint> &path)
+
+void CustomGraphicsView::displayPath(const QVector<QPoint> &path)
 {
     // Отобразите маршрут на поле
     QPen pathPen(Qt::blue, 3);

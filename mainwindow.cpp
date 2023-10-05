@@ -33,6 +33,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::createScene()
 {
+    grid.clear();
+
     fieldWidth = ui->lineEdit_W->text().toInt();
     fieldHeight = ui->lineEdit_H->text().toInt();
 
@@ -43,6 +45,8 @@ void MainWindow::createScene()
     }
 
     customView->generateField(fieldWidth, fieldHeight);
+    grid = customView->getGrid();
+    pathfindingThread->setSceneAndGrid(scene, grid);
 }
 
 void MainWindow::setStartPoint(const QPoint &point)
@@ -51,6 +55,9 @@ void MainWindow::setStartPoint(const QPoint &point)
     {
         startPoint = point;
         pathfindingThread->setStartPoint(startPoint);
+        if (!endPoint.isNull()) {
+            pathfindingThread->run();
+        }
     }
 }
 
@@ -60,18 +67,16 @@ void MainWindow::setEndPoint(const QPoint &point)
     {
         endPoint = point;
         pathfindingThread->setEndPoint(endPoint);
-        pathfindingThread->start();
+        if (!startPoint.isNull()) {
+            pathfindingThread->run();
+        }
     }
 }
 
-void MainWindow::updatePath(const std::vector<QPoint> &path)
+
+void MainWindow::updatePath(const QVector<QPoint> &path)
 {
-    // Преобразуйте QVector<QPoint> в std::vector<QPoint>
-    std::vector<QPoint> stdPath(path.begin(), path.end());
-
-    // Обработка найденного пути
-    customView->displayPath(stdPath);
-
+    customView->displayPath(path);
 }
 
 void MainWindow::handlePathNotFound()

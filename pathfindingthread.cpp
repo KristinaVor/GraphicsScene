@@ -67,7 +67,7 @@ void PathfindingThread::run()
         if (pathFound)
         {
             // Восстановление пути
-            std::vector<QPoint> path;
+            QVector<QPoint> path;
             QPoint current = endSquare;
             while (current != QPoint(-1, -1))
             {
@@ -109,15 +109,12 @@ void PathfindingThread::setEndPoint(const QPoint &point)
     endPoint = point;
 }
 
-void PathfindingThread::setScene(QGraphicsScene *scene)
+void PathfindingThread::setSceneAndGrid(QGraphicsScene *scene, const QVector<QVector<int>> &newGrid)
 {
     this->scene = scene;
-}
-
-void PathfindingThread::setGrid(const QVector<QVector<int>> &newGrid)
-{
     grid = newGrid;
 }
+
 
 void PathfindingThread::clearPath()
 {

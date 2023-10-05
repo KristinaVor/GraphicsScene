@@ -19,7 +19,8 @@ public:
 
 public slots:
     void generateField(int width, int height);
-    void displayPath(const std::vector<QPoint> &path);
+    void displayPath(const QVector<QPoint> &path);
+    QVector<QVector<int>> getGrid() const;
 
 signals:
     void setStartPointSignal(const QPoint &point);
