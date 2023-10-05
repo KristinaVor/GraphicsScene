@@ -30,14 +30,16 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 private:
-    void setStartPoint(int x, int y);
-    void setEndPoint(int x, int y);
+    void setStartPoint(const QPoint &point);
+    void setEndPoint(const QPoint &point);
 
 
     int fieldWidth;
     int fieldHeight;
     QPoint startPoint;
     QPoint endPoint;
+    bool startPointSet;
+    bool endPointSet;
 
     QVector<QVector<int>> grid;
 };

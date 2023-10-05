@@ -3,7 +3,7 @@
 #include "customgraphicsview.h"
 
 CustomGraphicsView::CustomGraphicsView(QGraphicsScene *scene, QWidget *parent)
-    : QGraphicsView(scene, parent)
+    : QGraphicsView(scene, parent), startPointSet(false), endPointSet(false)
 {
     setRenderHint(QPainter::Antialiasing);
     setRenderHint(QPainter::SmoothPixmapTransform);
@@ -27,23 +27,29 @@ void CustomGraphicsView::wheelEvent(QWheelEvent *event)
 
 void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    int x = event->pos().x() / 50;
-    int y = event->pos().y() / 50;
+    QPoint clickPos = event->pos();
+    QPointF scenePos = mapToScene(clickPos);
+
+    int x = static_cast<int>(scenePos.x() / 50);
+    int y = static_cast<int>(scenePos.y() / 50);
 
     if (x >= 0 && x < fieldWidth && y >= 0 && y < fieldHeight)
     {
-        if (!startPoint.isNull() && endPoint.isNull())
+        if (!startPointSet && !endPointSet)
         {
-            setEndPoint(x, y);
+            setStartPoint(QPoint(x, y));
+            startPointSet = true;
         }
-        else
+        else if (startPointSet && !endPointSet)
         {
-            setStartPoint(x, y);
+            setEndPoint(QPoint(x, y));
+            endPointSet = true;
         }
     }
 }
 
-void CustomGraphicsView::setStartPoint(int x, int y)
+
+void CustomGraphicsView::setStartPoint(const QPoint &point)
 {
     QGraphicsItem *prevStart = scene()->itemAt(startPoint.x() * 50 + 1, startPoint.y() * 50 + 1, QTransform());
     if (prevStart)
@@ -53,14 +59,14 @@ void CustomGraphicsView::setStartPoint(int x, int y)
             scene()->removeItem(startRect);
     }
 
-    startPoint = QPoint(x, y);
-    QGraphicsEllipseItem *start = scene()->addEllipse(x * 50 + 10, y * 50 + 10, 30, 30, QPen(), QBrush(Qt::green));
+    startPoint = point;
+    QGraphicsEllipseItem *start = scene()->addEllipse(startPoint.x() * 50 + 10, startPoint.y() * 50 + 10, 30, 30, QPen(), QBrush(Qt::green));
     start->setZValue(1);
 
     emit setStartPointSignal(startPoint);
 }
 
-void CustomGraphicsView::setEndPoint(int x, int y)
+void CustomGraphicsView::setEndPoint(const QPoint &point)
 {
     QGraphicsItem *prevEnd = scene()->itemAt(endPoint.x() * 50 + 1, endPoint.y() * 50 + 1, QTransform());
     if (prevEnd)
@@ -70,12 +76,13 @@ void CustomGraphicsView::setEndPoint(int x, int y)
             scene()->removeItem(endRect);
     }
 
-    endPoint = QPoint(x, y);
-    QGraphicsEllipseItem *end = scene()->addEllipse(x * 50 + 10, y * 50 + 10, 30, 30, QPen(), QBrush(Qt::red));
+    endPoint = point;
+    QGraphicsEllipseItem *end = scene()->addEllipse(endPoint.x() * 50 + 10, endPoint.y() * 50 + 10, 30, 30, QPen(), QBrush(Qt::red));
     end->setZValue(1);
 
     emit setEndPointSignal(endPoint);
 }
+
 
 
 void CustomGraphicsView::generateField(int width, int height)
