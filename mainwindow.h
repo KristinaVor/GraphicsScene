@@ -3,9 +3,6 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
-#include <QGraphicsRectItem>
-#include <QGraphicsEllipseItem>
-#include <QGraphicsView>
 #include <QPoint>
 #include <QMouseEvent>
 #include <QWheelEvent>
@@ -13,6 +10,7 @@
 #include <QSettings>
 
 class PathfindingThread;
+class CustomGraphicsView;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,22 +24,24 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private slots:
-    void generateField();
-    void clearField();
+    void createScene();
+    void handlePathNotFound();
+
     void loadSettings();
     void saveSettings();
-    void handlePathNotFound();
 
     void updatePath(const std::vector<QPoint> &path);
 
-private:
-    void createGrid();
-    void displayPathOnField(const std::vector<QPoint> &path);
+    void setStartPoint(const QPoint &point);
+    void setEndPoint(const QPoint &point);
 
+private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     PathfindingThread *pathfindingThread;
+    CustomGraphicsView* customView;
     QList<QGraphicsLineItem *> pathLines;
     QPoint startPoint;
     QPoint endPoint;

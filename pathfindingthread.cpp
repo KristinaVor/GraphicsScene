@@ -2,11 +2,9 @@
 
 PathfindingThread::PathfindingThread(QObject *parent) : QThread(parent)
 {
-    // Инициализируем начальную и конечную точки
     startPoint = QPoint(-1, -1);
     endPoint = QPoint(-1, -1);
 
-    // Инициализируем сцену, сетку и путь
     scene = nullptr;
     grid.clear();
     path.clear();
@@ -14,7 +12,6 @@ PathfindingThread::PathfindingThread(QObject *parent) : QThread(parent)
 
 PathfindingThread::~PathfindingThread()
 {
-    // При уничтожении объекта очищаем память, если это необходимо
     clearPath();
 }
 
