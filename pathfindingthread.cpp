@@ -54,11 +54,15 @@ void PathfindingThread::run()
             {
                 if (parentMap.find(neighbor) == parentMap.end())
                 {
-                    dfsStack.push(neighbor);
-                    parentMap[neighbor] = currentSquare;
+                    // Проверьте, является ли соседняя точка стеной
+                    if (grid[neighbor.y()][neighbor.x()] != 1) {
+                        dfsStack.push(neighbor);
+                        parentMap[neighbor] = currentSquare;
+                    }
                 }
             }
         }
+
 
         if (pathFound)
         {
@@ -83,13 +87,17 @@ void PathfindingThread::run()
 
 QList<QPoint> PathfindingThread::getNeighbors(const QPoint &point)
 {
-    // Вернуть список соседних квадратов (возможных ходов)
-    // Например, соседи сверху, снизу, слева и справа от point
     QList<QPoint> neighbors;
-    neighbors.push_back(QPoint(point.x() - 1, point.y()));
-    neighbors.push_back(QPoint(point.x() + 1, point.y()));
-    neighbors.push_back(QPoint(point.x(), point.y() - 1));
-    neighbors.push_back(QPoint(point.x(), point.y() + 1));
+
+    if (point.y() - 1 >= 0)
+        neighbors.push_back(QPoint(point.x(), point.y() - 1)); // Сверху
+    if (point.y() + 1 < grid.size())
+        neighbors.push_back(QPoint(point.x(), point.y() + 1)); // Снизу
+    if (point.x() - 1 >= 0)
+        neighbors.push_back(QPoint(point.x() - 1, point.y())); // Слева
+    if (point.x() + 1 < grid[0].size())
+        neighbors.push_back(QPoint(point.x() + 1, point.y())); // Справа
+
     return neighbors;
 }
 
