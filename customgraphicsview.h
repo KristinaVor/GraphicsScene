@@ -29,7 +29,6 @@ protected:
 private:
     void setStartPoint(const QPoint &point);
     void setEndPoint(const QPoint &point);
-    void clearPath();
 
     int fieldWidth;
     int fieldHeight;

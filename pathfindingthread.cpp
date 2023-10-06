@@ -26,11 +26,9 @@ void PathfindingThread::run()
         QPoint startSquare = startPoint;
         QPoint endSquare = endPoint;
 
-        // Создайте стек для выполнения поиска в глубину
         std::stack<QPoint> dfsStack;
         dfsStack.push(startSquare);
 
-        // Создайте карту для отслеживания предков (для восстановления пути)
         std::map<QPoint, QPoint, QPointComparator> parentMap;
 
         bool pathFound = false;
@@ -47,14 +45,12 @@ void PathfindingThread::run()
                 break;
             }
 
-            // Получите соседние квадраты (возможные ходы)
             QList<QPoint> neighbors = getNeighbors(currentSquare);
 
             for (const QPoint &neighbor : neighbors)
             {
                 if (parentMap.find(neighbor) == parentMap.end())
                 {
-                    // Проверьте, является ли соседняя точка стеной
                     if (grid[neighbor.y()][neighbor.x()] != 1) {
                         dfsStack.push(neighbor);
                         parentMap[neighbor] = currentSquare;

@@ -95,40 +95,37 @@ void CustomGraphicsView::generateField(int width, int height)
     fieldWidth = width;
     fieldHeight = height;
 
+    // Создаем сетку и стены
+    grid = QVector<QVector<int>>(fieldHeight, QVector<int>(fieldWidth, 0));
+
     for (int x = 0; x < fieldWidth; ++x)
     {
         for (int y = 0; y < fieldHeight; ++y)
         {
             QGraphicsRectItem *gridItem = new QGraphicsRectItem(x * squareSize, y * squareSize, squareSize, squareSize);
-            gridItem->setPen(QPen(Qt::gray)); // Цвет сетки
+            gridItem->setPen(QPen(Qt::gray));
             scene()->addItem(gridItem);
+
+            int value = qrand() % 4; // 25% вероятность, что квадрат будет стеной
+            grid[y][x] = value;
+
+            if (value == 1)
+            {
+                QGraphicsRectItem *wall = scene()->addRect(x * 50, y * 50, 50, 50, QPen(), QBrush(Qt::black));
+                wall->setZValue(1);
+            }
         }
     }
 
     scene()->setSceneRect(0, 0, fieldWidth * 50, fieldHeight * 50);
 
-    for (int i = 0; i < fieldHeight; ++i)
-    {
-        QVector<int> row;
-        for (int j = 0; j < fieldWidth; ++j)
-        {
-            int value = qrand() % 4; // 25% вероятность, что квадрат будет стеной
-            row.append(value);
-            if (value == 1)
-            {
-                QGraphicsRectItem *wall = scene()->addRect(j * 50, i * 50, 50, 50, QPen(), QBrush(Qt::black));
-                wall->setZValue(1);
-            }
-        }
-        grid.append(row);
-    }
-    endPointSet = false;
     startPointSet = false;
+    endPointSet = false;
 }
 
 void CustomGraphicsView::displayPath(const QVector<QPoint> &path)
 {
-    clearPath();
+     pathItems.clear();
 
     QPen pathPen(Qt::blue, 3);
 
@@ -144,14 +141,4 @@ void CustomGraphicsView::displayPath(const QVector<QPoint> &path)
 
         pathItems.append(pathLine);
     }
-}
-
-void CustomGraphicsView::clearPath()
-{
-    for (QGraphicsItem *item : pathItems)
-    {
-        scene()->removeItem(item);
-        delete item;
-    }
-    pathItems.clear();
 }
