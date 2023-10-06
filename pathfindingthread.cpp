@@ -4,10 +4,7 @@ PathfindingThread::PathfindingThread(QObject *parent) : QThread(parent)
 {
     startPoint = QPoint(-1, -1);
     endPoint = QPoint(-1, -1);
-
     scene = nullptr;
-    grid.clear();
-    path.clear();
 }
 
 PathfindingThread::~PathfindingThread()
@@ -35,7 +32,6 @@ void PathfindingThread::run()
 
         // Создайте карту для отслеживания предков (для восстановления пути)
         std::map<QPoint, QPoint, QPointComparator> parentMap;
-        parentMap[startSquare] = QPoint(-1, -1);
 
         bool pathFound = false;
 
@@ -66,19 +62,20 @@ void PathfindingThread::run()
 
         if (pathFound)
         {
-            path.clear();
+            QVector<QPoint> pathToEmit;
             QPoint current = endSquare;
-            while (current != QPoint(-1, -1))
+            while (current != QPoint(-1, -1) && current != startPoint)
             {
-                path.prepend(current);
+                pathToEmit.prepend(current);
                 current = parentMap[current];
             }
+            pathToEmit.prepend(startPoint);
+            SetPath(pathToEmit);
 
-            // Отправьте сигнал с найденным путем
-            emit pathFoundSignal(path);
+            emit pathFoundSignal();
         }
         else
-        {    // Путь не найден
+        {
             emit pathNotFoundSignal();
         }
     }
@@ -96,6 +93,16 @@ QList<QPoint> PathfindingThread::getNeighbors(const QPoint &point)
     return neighbors;
 }
 
+QVector<QPoint> PathfindingThread::GetPath() const
+{
+    return path;
+}
+
+void PathfindingThread::SetPath(const QVector<QPoint>& newPath)
+{
+    path = newPath;
+}
+
 void PathfindingThread::setStartPoint(const QPoint &point)
 {
     startPoint = point;
@@ -106,12 +113,11 @@ void PathfindingThread::setEndPoint(const QPoint &point)
     endPoint = point;
 }
 
-void PathfindingThread::setSceneAndGrid(QGraphicsScene *scene, const QVector<QVector<int>> &newGrid)
+void PathfindingThread::setSceneAndGrid(QGraphicsScene *scene, const QVector<QVector<int>> &grid)
 {
     this->scene = scene;
-    grid = newGrid;
+    this->grid = grid;
 }
-
 
 void PathfindingThread::clearPath()
 {

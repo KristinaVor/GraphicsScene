@@ -3,30 +3,31 @@
 
 #include <QThread>
 #include <QPoint>
-#include <QGraphicsScene>
 #include <QVector>
 #include <QList>
 #include <stack>
 #include <map>
-#include <vector>
+
+class QGraphicsScene;
 
 class PathfindingThread : public QThread
 {
     Q_OBJECT
 
 public:
-    explicit PathfindingThread(QObject *parent = nullptr);
-    ~PathfindingThread(); // Добавлен деструктор
+    PathfindingThread(QObject *parent = nullptr);
+    ~PathfindingThread();
 
     void run() override;
     void setStartPoint(const QPoint &point);
     void setEndPoint(const QPoint &point);
-    void clearPath();
-    void setSceneAndGrid(QGraphicsScene *scene, const QVector<QVector<int>> &newGrid);
+    void setSceneAndGrid(QGraphicsScene *scene, const QVector<QVector<int>> &grid);
+    void SetPath(const QVector<QPoint>& newPath);
+    QVector<QPoint> GetPath() const;
 
 signals:
-    void pathFoundSignal(const QVector<QPoint> &path); // Сигнал для передачи найденного пути
-    void pathNotFoundSignal(); // Сигнал для передачи информации о том, что путь не найден
+    void pathFoundSignal();
+    void pathNotFoundSignal();
 
 private:
     QPoint startPoint;
@@ -36,6 +37,7 @@ private:
     QVector<QPoint> path;
 
     QList<QPoint> getNeighbors(const QPoint &point);
+    void clearPath();
 };
 
 #endif // PATHFINDINGTHREAD_H

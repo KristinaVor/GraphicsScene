@@ -1,14 +1,10 @@
-// customgraphicsview.h
-
 #ifndef CUSTOMGRAPHICSVIEW_H
 #define CUSTOMGRAPHICSVIEW_H
 
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
-#include <QGraphicsView>
 #include <QMouseEvent>
-#include <QWheelEvent>
 
 class CustomGraphicsView : public QGraphicsView
 {

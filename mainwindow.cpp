@@ -6,29 +6,52 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , scene(nullptr)
+    , pathfindingThread(nullptr)
+    , customView(nullptr)
+    , startPoint(-1, -1)
+    , endPoint(-1, -1)
+    , fieldWidth(0)
+    , fieldHeight(0)
 {
     ui->setupUi(this);
 
     pathfindingThread = new PathfindingThread(this);
 
     scene = new QGraphicsScene(this);
-    customView = new CustomGraphicsView(scene,this);
+    customView = new CustomGraphicsView(scene, this);
     ui->verticalLayout->addWidget(customView);
 
     connect(ui->pushButton_generate, &QPushButton::clicked, this, &MainWindow::createScene);
+    connect(pathfindingThread, SIGNAL(pathFoundSignal()), this, SLOT(updatePath()));
+    connect(pathfindingThread, SIGNAL(pathNotFoundSignal()), this, SLOT(handlePathNotFound()));
+
+
     connect(customView, &CustomGraphicsView::setStartPointSignal, this, &MainWindow::setStartPoint);
     connect(customView, &CustomGraphicsView::setEndPointSignal, this, &MainWindow::setEndPoint);
-
-
-    connect(pathfindingThread, &PathfindingThread::pathFoundSignal, this, &MainWindow::updatePath);
-    connect(pathfindingThread, &PathfindingThread::pathNotFoundSignal, this, &MainWindow::handlePathNotFound);
 
     loadSettings();
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    if (pathfindingThread != nullptr)
+    {
+        delete pathfindingThread;
+    }
+    if (customView != nullptr)
+    {
+        delete customView;
+    }
+    if (scene != nullptr)
+    {
+        delete scene;
+    }
+    if (ui != nullptr)
+    {
+        delete ui;
+    }
+
 }
 
 void MainWindow::createScene()
@@ -51,38 +74,29 @@ void MainWindow::createScene()
 
 void MainWindow::setStartPoint(const QPoint &point)
 {
-    if (point != startPoint)
-    {
-        startPoint = point;
-        pathfindingThread->setStartPoint(startPoint);
-        if (!endPoint.isNull()) {
-            pathfindingThread->start();
-        }
-    }
+    startPoint = point;
+    pathfindingThread->setStartPoint(startPoint);
 }
 
 void MainWindow::setEndPoint(const QPoint &point)
 {
-    if (point != endPoint)
+    endPoint = point;
+    pathfindingThread->setEndPoint(endPoint);
+    if (!startPoint.isNull())
     {
-        endPoint = point;
-        pathfindingThread->setEndPoint(endPoint);
-        if (!startPoint.isNull()) {
-            pathfindingThread->start();
-        }
+        pathfindingThread->start();
     }
 }
 
-
-void MainWindow::updatePath(const QVector<QPoint> &path)
+void MainWindow::updatePath()
 {
+    path = pathfindingThread->GetPath();
     customView->displayPath(path);
 }
 
 void MainWindow::handlePathNotFound()
 {
     QMessageBox::critical(this, "Ошибка", "Путь не найден");
-    return;
 }
 
 void MainWindow::loadSettings()
@@ -92,7 +106,7 @@ void MainWindow::loadSettings()
     fieldWidth = settings.value("fieldWidth", 10).toInt();
     fieldHeight = settings.value("fieldHeight", 10).toInt();
 
-    resize(800, 600); // Установите размер окна по умолчанию
+    resize(800, 600);
     move(windowPos);
 }
 

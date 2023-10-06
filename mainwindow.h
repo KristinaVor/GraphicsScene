@@ -4,8 +4,6 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QPoint>
-#include <QMouseEvent>
-#include <QWheelEvent>
 #include <QMessageBox>
 #include <QSettings>
 
@@ -28,14 +26,11 @@ public:
 private slots:
     void createScene();
     void handlePathNotFound();
-
-    void loadSettings();
-    void saveSettings();
-
-    void updatePath(const QVector<QPoint> &path);
-
+    void updatePath();
     void setStartPoint(const QPoint &point);
     void setEndPoint(const QPoint &point);
+    void loadSettings();
+    void saveSettings();
 
 private:
     Ui::MainWindow *ui;
